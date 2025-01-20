@@ -27,3 +27,9 @@ npm run dev
 ```sh
 npm run build
 ```
+
+
+
+------------------------------------------
+
+https://cors-anywhere.herokuapp.com/corsdemo
