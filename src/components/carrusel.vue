@@ -1,22 +1,14 @@
 <template>
-  <div id="carouselExampleIndicators" class="carousel slide d-block w-50 mx-auto" data-bs-ride="carousel">
+  <div id="carouselExampleIndicators" class="carousel slide mx-auto" data-bs-ride="carousel" data-bs-interval="1000">
     <div class="carousel-inner">
       <div v-for="(cancion, index) in canciones" :key="index" :class="['carousel-item', { active: index === 0 }]">
-          <div class="carousel-caption d-none d-md-block">
-              <h5>Cancion: {{ cancion.title}}</h5>
-              <p>Album: {{ cancion.album.title }}</p>
-          </div>
-        <img :src="cancion.album.cover_big" class="d-block w-100"/>
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Canción: {{ cancion.title }}</h5>
+          <p>Álbum: {{ cancion.album.title }}</p>
+        </div>
+        <img :src="cancion.album.cover_big" class="d-block w-100" />
       </div>
     </div>
-    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
   </div>
 </template>
 
@@ -26,9 +18,28 @@ import { ref, onMounted } from 'vue';
 const canciones = ref([]);
 
 const searchDeezer = async () => {
-    const llamada = await fetch('https://cors-anywhere.herokuapp.com/https://api.deezer.com/chart');
-    const datos = await llamada.json();
-    canciones.value = datos.tracks.data;
+  const llamada = await fetch('https://cors-anywhere.herokuapp.com/https://api.deezer.com/chart');
+  const datos = await llamada.json();
+  canciones.value = datos.tracks.data;
 };
+
 onMounted(searchDeezer);
 </script>
+
+<style scoped>
+.carousel {
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.carousel-inner img {
+  max-height: 450px; /* Reduce la altura de las imágenes */
+  object-fit: cover; /* Asegura que las imágenes no se deformen */
+}
+
+.carousel-caption {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+}
+</style>

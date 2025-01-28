@@ -1,10 +1,12 @@
 <template>
 
-    <!-- Barra -->
-    <SearchBar/>
-
     <!-- CARRUSEL -->
-    <carrusel/>
+      <carrusel/>
+
+    <!-- buscador -->
+      <SearchBar/>
+
+
 
   <div class="container">
     <h1>Home</h1>
@@ -97,65 +99,5 @@ h1 {
     }
   }
 }
-
-.search-bar {
-  margin: 20px 0;
-  padding: 10px;
-  border: 2px solid #007bff;
-  border-radius: 25px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar input {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 25px;
-}
-
-.search-bar button {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.search-bar button:hover {
-  background-color: #0056b3;
-}
-
-.custom-carousel .carousel-inner {
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.custom-carousel.wider-carousel {
-    max-width: 95%;
-    margin: 0 auto;
-}
-
-
-.custom-carousel .carousel-caption {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 15px;
-  border-radius: 10px;
-  color: #fff;
-}
-
-.custom-carousel .carousel-control-prev-icon,
-.custom-carousel .carousel-control-next-icon {
-  filter: invert(100%);
-}
 </style>
+

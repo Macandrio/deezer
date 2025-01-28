@@ -1,11 +1,18 @@
 <template>
-  <div class="search-container">
-      <div class="search-input">
-          <input type="text" v-model="searchQuery" @keyup.enter="searchDeezer" placeholder="Buscar en Deezer" />
-          <button @click="searchDeezer">
-              <i class="bi bi-search"></i> <!-- Ícono de búsqueda de Bootstrap -->
-          </button>
-      </div>
+  <div class="search-container d-flex justify-content-end">
+    <div class="input-group w-auto">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        v-model="searchQuery"
+        @keyup.enter="searchDeezer"
+        placeholder="Buscar en Deezer"
+        aria-label="Buscar en Deezer"
+      />
+      <button class="btn btn-primary btn-sm" @click="searchDeezer">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
   </div>
 </template>
 
