@@ -203,6 +203,7 @@ export default {
   justify-content: center; /* Centra los botones */
   gap: 15px;
   width: 100%;
+  margin-right: 105px;
 
 }
 
@@ -231,6 +232,7 @@ export default {
   justify-content: center;
   cursor: pointer;
   margin-bottom: 10px;
+
 }
 
 .btn-play:hover {
@@ -245,6 +247,7 @@ export default {
   justify-content: center; /* Centra la barra */
   gap: 10px;
   width: 50%;
+  margin-right: 80px;
 }
 
 .tiempo {
