@@ -19,10 +19,7 @@ import Reproductor from './components/Reproductor.vue';
     <Menu />
 
     <!-- Contenedor para centrar el reproductor -->
-    <div class="reproductor-container">
-      <h1>Mi Reproductor de Música</h1>
       <Reproductor />
-    </div>
 
     <!-- Main Content -->
     <main class="container my-4">

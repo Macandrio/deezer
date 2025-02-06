@@ -1,70 +1,80 @@
 <template>
-  <div>
-    <h1>Búsqueda de canciones en Deezer</h1>
-    <!-- Componente hijo -->
-    <SearchBar @results="handleResults" />
-    <hr />
-    <div class="filters">
-      <label>
-        <input type="checkbox" v-model="sortAscending" aria-label="Ordenar ascendente" />
-        Ordenar por nombre (ascendente)
-      </label>
- 
- 
-      <label>
-        Duration mínimo:
-        <input type="number" v-model="minDuration" placeholder="Ejemplo: 100" aria-label="Filtrar por BPM" />
-      </label>
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">Buscar Canciones</h2>
+
+    <!-- Barra de búsqueda -->
+    <div class="input-group mb-3">
+      <input 
+        v-model="query" 
+        class="form-control" 
+        placeholder="Busca una canción..." 
+        @keyup.enter="buscarCancion" 
+      />
+      <button class="btn btn-primary" @click="buscarCancion">Buscar</button>
     </div>
-    <!-- Lista de canciones -->
-    <ul v-if="songs.length > 0">
-      <li v-for="song in filteredAndSortedSongs" :key="song.id">
-        <strong>{{ song.title }}</strong> - {{ song.artist.name }} - {{ song.album.title }} - {{ song.duration }}
-      </li>
-    </ul>
-    <p v-else>No hay resultados para mostrar</p>
+
+    <!-- Lista de canciones en tarjetas -->
+    <div class="row">
+      <div v-for="track in canciones" :key="track.id" class="col-md-4 mb-3">
+        <div class="card h-100">
+          <img :src="track.album.cover_medium" class="card-img-top" alt="Portada">
+          <div class="card-body">
+            <h5 class="card-title">{{ track.title }}</h5>
+            <p class="card-text"><strong>Artista:</strong> {{ track.artist.name }}</p>
+            <button class="btn btn-success w-100" @click="seleccionarCancion(track)">🎵 Reproducir</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
- </template>
- 
- 
- <script setup>
- import { ref, computed } from "vue";
- import SearchBar from "../components/SearchBar.vue"; // Importa el componente hijo
- 
- 
- const songs = ref([]); // Estado para almacenar la lista de canciones
- 
- 
- const sortAscending = ref(false); // Controla el orden ascendente o descendente
- const minDuration = ref(0); // BPM mínimo para el filtro
- 
- 
- // Lista filtrada y ordenada
- const filteredAndSortedSongs = computed(() => {
-  let result = [...songs.value];
- 
- 
-  // Filtrar por BPM mínimo
-  if (minDuration.value > 0) {
-    result = result.filter(song => song.duration && song.duration >= minDuration.value);
-  }
- 
- 
-  // Ordenar por nombre
-  if (sortAscending.value) {
-    result.sort((a, b) => a.title.localeCompare(b.title));
-  } else {
-    result.sort((a, b) => b.title.localeCompare(a.title));
-  }
- 
- 
-  return result;
- });
- 
- 
- // Maneja los resultados emitidos por el componente hijo
- const handleResults = (data) => {
-  songs.value = data; // Actualiza la lista de canciones
- };
- </script>
- 
+</template>
+
+<script>
+import { usePlayerStore } from "@/stores/player.js";
+
+export default {
+  data() {
+    return {
+      query: "",
+      canciones: [],
+    };
+  },
+  methods: {
+    async buscarCancion() {
+      if (!this.query) return;
+      try {
+        const response = await fetch(
+          `https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=${this.query}`
+        );
+        const data = await response.json();
+        this.canciones = data.data;
+      } catch (error) {
+        console.error("Error en la búsqueda:", error);
+      }
+    },
+    seleccionarCancion(track) {
+      const playerStore = usePlayerStore();
+      playerStore.setCancion({
+        titulo: track.title,
+        artista: track.artist.name,
+        imagen: track.album.cover_medium,
+        preview: track.preview, // URL de la canción
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+.card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+</style>
