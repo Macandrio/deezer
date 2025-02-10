@@ -1,84 +1,46 @@
-<template>
-  <div class="search-container d-flex justify-content-end">
-    <div class="input-group w-auto">
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        v-model="searchQuery"
-        @keyup.enter="searchDeezer"
-        placeholder="Buscar en Deezer"
-        aria-label="Buscar en Deezer"
-      />
-      <button class="btn btn-primary btn-sm" @click="searchDeezer">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { RouterLink } from 'vue-router'
-import { ref } from "vue";
-const searchQuery = ref(""); // Estado reactivo para la barra de búsqueda
-// Función para realizar la búsqueda
-const searchDeezer = async () => {
-  if (searchQuery.value.trim() === "") return; // Evita búsquedas vacías
-  const url = `https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?q=${encodeURIComponent(
-      searchQuery.value
-  )}`;
-  try {
-      const response = await fetch(url);
-      if (!response.ok) {
-          throw new Error("Error al buscar en Deezer");
-      }
-      const data = await response.json();
-      emit("results", data.data); // Emitimos los resultados al componente padre
-  } catch (error) {
-      console.error(error.message);
+import { ref, defineEmits } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+// Router para redireccionar si estamos en HomeView
+const enrutador = useRouter();
+const rutaActual = useRoute();
+
+// Variable reactiva para almacenar la búsqueda del usuario
+const consultaBusqueda = ref("");
+
+// Emitimos un evento al componente padre cuando el usuario busca algo
+const emitir = defineEmits(["search"]);
+
+// Función que se ejecuta al buscar
+const realizarBusqueda = () => {
+  if (!consultaBusqueda.value.trim()) {
+    console.log("⚠️ No se ingresó ninguna búsqueda.");
+    return;
   }
+
+  console.log(`🔍 Buscando: "${consultaBusqueda.value}"`);
+
+  // Redirigir a SearchView con el término de búsqueda en la URL
+  enrutador.push({ name: "SearchView", query: { q: consultaBusqueda.value } });
 };
-// Define la función para emitir eventos
-const emit = defineEmits(["results"]);
 </script>
 
-<style scoped>
-.search-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.search-input {
-  width: 90%;
-  max-width: 600px;
-  /* Opcional: limitar el ancho máximo */
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  padding: 0;
-}
-
-.search-input input {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px 0 0 5px;
-}
-
-.search-input button {
-  border: none;
-  background-color: transparent;
-  padding: 0 10px;
-  cursor: pointer;
-  color: #777;
-  font-size: 20px;
-}
-
-.search-input button:hover {
-  color: #000;
-}
-</style>
+<template>
+  <div class="contenedor-busqueda d-flex justify-content-end">
+    <form class="input-group caja-busqueda" @submit.prevent="realizarBusqueda">
+      <!-- Campo de entrada donde el usuario escribe su búsqueda -->
+      <input
+        type="text"
+        class="form-control form-control-sm rounded-pill"
+        v-model="consultaBusqueda"
+        placeholder="🔍 Buscar..."
+        aria-label="Buscar"
+      />
+      <!-- Botón de búsqueda -->
+      <button class="btn btn-primary btn-sm rounded-pill" type="submit">
+        <i class="bi bi-search"></i>
+      </button>
+    </form>
+  </div>
+</template>

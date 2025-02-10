@@ -130,11 +130,15 @@ export default {
       this.isLiked = !this.isLiked;
     },
     siguienteCancion() {
-      console.log("Siguiente canción (función pendiente)");
+      console.log("Clic en siguienteCancion en Reproductor.vue");
+      playerStore.siguienteCancion();
     },
+
     anteriorCancion() {
-      console.log("Anterior canción (función pendiente)");
+      console.log("Clic en anteriorCancion en Reproductor.vue");
+      playerStore.anteriorCancion();
     },
+
   },
 };
 </script>

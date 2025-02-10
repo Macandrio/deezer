@@ -16,7 +16,9 @@ import Reproductor from './components/Reproductor.vue';
     </header>
 
     <!-- Menu -->
-    <Menu />
+    <div class="navbar-wrapper">
+      <Menu />
+    </div>
 
     <!-- Contenedor para centrar el reproductor -->
       <Reproductor />
@@ -60,5 +62,13 @@ li {
   text-align: center;
 }
 
-
+.navbar-wrapper {
+  width: 100%;
+  position: sticky;
+  top: 0px; /* Espacio para que no se superponga con el título */
+  z-index: 1050;
+  background-color: #343a40;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: top 0.3s ease-in-out;
+}
 </style>

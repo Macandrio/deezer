@@ -1,59 +1,38 @@
 <template>
-  <div>
-    <!-- Importamos los modales -->
-    <WelcomeModal ref="welcomeModal" @usuarioRegistrado="usuario = $event" />
-    <LoginModal ref="loginModal" @usuarioLogueado="usuario = $event" />
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <!-- Importamos los modales -->
+      <WelcomeModal ref="welcomeModal" @usuarioRegistrado="usuario = $event" />
+      <LoginModal ref="loginModal" @usuarioLogueado="usuario = $event" />
 
-    <!-- Menú de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-menu">
-      <div class="container-fluid">
-        
-        <!-- Botón hamburguesa en móviles -->
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+      <!-- Buscador en el menú -->
+      <SearchBar />
 
-        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-          <!-- Menú de navegación -->
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/">🏠 Home</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/playlists">🎼 Playlists</router-link>
-            </li>
-          </ul>
+      <!-- Menú de navegación centrado -->
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <router-link class="nav-link" to="/">🏠 Home</router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/playlists">🎼 Playlists</router-link>
+        </li>
+      </ul>
 
-          <!-- Buscador centrado -->
-          <div class="search-container mx-auto">
-            <input type="text" class="search-input" placeholder="Buscar..." />
-            <router-link class="search-btn" to="/search">🔎</router-link>
-          </div>
-
-          <!-- Usuario logueado -->
-          <div v-if="usuario" class="d-flex align-items-center">
-            <img :src="usuario.avatar" alt="Avatar" class="avatar" />
-            <span class="text-white ms-2">Hola, {{ usuario.nombre }}!</span>
-            <button @click="cerrarSesion" class="btn btn-sm btn-danger ms-3">Cerrar Sesión</button>
-          </div>
-
-          <!-- Botones de Login y Registro cuando el usuario NO está logueado -->
-          <div v-if="!usuario" class="d-flex">
-            <button @click="abrirRegistro" class="btn btn-success me-2">Registrarse</button>
-            <button @click="abrirLogin" class="btn btn-primary">Login</button>
-          </div>
-        </div>
+      <!-- Usuario logueado -->
+      <div v-if="usuario" class="d-flex align-items-center">
+        <img :src="usuario.avatar" alt="Avatar" class="avatar" />
+        <span class="text-white ms-2">Hola, {{ usuario.nombre }}!</span>
+        <button @click="cerrarSesion" class="btn btn-sm btn-danger ms-3">Cerrar Sesión</button>
       </div>
-    </nav>
-  </div>
+
+      <!-- Botones de Login y Registro -->
+      <div v-if="!usuario" class="d-flex">
+        <button @click="abrirRegistro" class="btn btn-success me-2">Registrarse</button>
+        <button @click="abrirLogin" class="btn btn-primary">Login</button>
+      </div>
+
+    </div>
+  </nav>
 </template>
 
 <script setup>
@@ -61,6 +40,7 @@ import { ref, onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import WelcomeModal from './WelcomeModal.vue';
 import LoginModal from './LoginModal.vue';
+import SearchBar from './SearchBar.vue';
 
 const usuario = ref(null);
 const welcomeModal = ref(null);
@@ -96,20 +76,11 @@ const cerrarSesion = () => {
 
 </script>
 
-
 <style scoped>
-/* Menú con margen superior y sticky para fijarse al hacer scroll */
-.sticky-menu {
-  position: sticky;
-  top: 0;
-  z-index: 1050;
-  width: 100%;
-  background-color: #343a40;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  margin-top: 10px;
+.navbar {
+  padding: 10px 20px;
 }
 
-/* Avatar del usuario */
 .avatar {
   width: 40px;
   height: 40px;
