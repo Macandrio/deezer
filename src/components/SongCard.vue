@@ -1,28 +1,76 @@
 <template>
-  <div class="card h-100 shadow-lg">
-    <img :src="cancion.album.cover_big" class="card-img-top" :alt="cancion.title" />
-    <div class="card-body text-center">
-      <h5 class="card-title text-truncate">{{ cancion.title }}</h5>
-      <p class="card-text text-muted">{{ cancion.artist.name }}</p>
-      <!-- Botón de "me gusta" adaptado del reproductor -->
-      <div class="like-container">
-      <button class="btn-like" @click="añadircancion">
-        <i :class="esta ? 'bi bi-heart-fill text-danger' : 'bi bi-heart'"></i>
+  <div class="card h-100 shadow">
+    <!-- Imagen de la carátula del álbum -->
+      <img
+        :src="cancion.album.cover_big"
+        class="card-img-top"
+        :alt="cancion.title"
+        @click.stop="verDetalles"
+      />
+
+    <!-- Contenido del cuerpo de la tarjeta -->
+    <div class="card-body d-flex flex-column">
+      <!-- Título de la canción -->
+      <h5 class="card-title mb-2 text-truncate text-center">
+        {{ cancion.title }}
+      </h5>
+
+      <!-- Nombre del artista -->
+      <p class="card-text text-muted mb-3 text-center">
+        {{ cancion.artist.name }}
+      </p>
+
+      <!-- Reproductor de vista previa (si existe) -->
+      <audio
+        v-if="cancion.preview"
+        controls
+        class="w-100 mb-3 align-self-center"
+      >
+        <source :src="cancion.preview" type="audio/mpeg" />
+        Tu navegador no soporta audio.
+      </audio>
+
+      <!-- Botón "Me gusta" -->
+      <button
+        class="btn btn-outline-danger mt-auto align-self-center"
+        @click="añadircancion"
+      >
+        <i
+          :class="esta ? 'bi bi-heart-fill text-danger' : 'bi bi-heart'"
+          class="me-2"
+        ></i>
+        <span v-if="esta">Quitar de Favoritos</span>
+        <span v-else>Añadir a Favoritos</span>
       </button>
-    </div>
     </div>
   </div>
 </template>
 
 
 
+
 <script setup>
 import { computed } from "vue";
 import { useFavoritesStore } from "@/stores/favorites";
+import { useInfoStore } from "@/stores/infoStore";
+
 
 const props = defineProps({
   cancion: Object
 });
+
+const infoStore = useInfoStore();
+
+function verDetalles() {
+  if (!props.cancion || !props.cancion.album) {
+    console.error("❌ Error: Canción o álbum no definidos:", props.cancion);
+    return;
+  }
+  console.log("🖱️ Click en la imagen. Canción enviada a setInfo():", props.cancion);
+  infoStore.setInfo("song", props.cancion);
+}
+
+
 
 const favoritesStore = useFavoritesStore();
 
@@ -38,42 +86,5 @@ function añadircancion(){
       console.log('añadida'+ cancion.id)
     }
 };
-
-
-
 </script>
-
-
-<style scoped>
-/* Botón de "Me gusta" */
-.like-container {
-  display: flex;
-  align-items: center;
-}
-
-.btn-like {
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  color: rgb(174, 17, 17);
-  cursor: pointer;
-}
-
-.btn-like:hover {
-  color: red;
-}
-
-@keyframes fillHeart {
-  0% {
-    color: transparent;
-  }
-  100% {
-    color: red;
-  }
-}
-
-.bi-heart-fill {
-  animation: fillHeart 0.1s ease-in-out forwards;
-}
-</style>
 

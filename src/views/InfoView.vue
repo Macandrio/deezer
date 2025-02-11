@@ -1,72 +1,60 @@
+<template>
+  <!-- Modal solo se muestra si hay datos en selectedItem -->
+  <div v-if="showModal" class="modal fade show d-block" tabindex="-1">
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Información Detallada</h5>
+          <button type="button" class="btn-close" @click="cerrarModal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Renderiza el componente correcto según el tipo -->
+          <InfoArtist v-if="selectedType === 'artist'" :artist="selectedItem" />
+          <InfoAlbum v-if="selectedType === 'album'" :album="selectedItem" />
+          <InfoSong v-if="selectedType === 'song'" :song="selectedItem" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
-import { ref, watchEffect } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, computed, watch } from "vue";
+import { useInfoStore } from "@/stores/infoStore";
 import InfoArtist from "@/components/ArtistCard.vue";
 import InfoAlbum from "@/components/AlbumCard.vue";
 import InfoSong from "@/components/SongCard.vue";
 
-const ruta = useRoute();
-const enrutador = useRouter();
-const id = ruta.params.id; // ID del elemento seleccionado
-const tipo = ruta.params.type; // Tipo de elemento seleccionado
+const infoStore = useInfoStore();
+const showModal = ref(false); // Control de visibilidad del modal
 
-const datos = ref(null);
-const cargando = ref(true);
-const error = ref("");
+// Computed para hacer selectedItem reactivo
+const selectedItem = computed(() => infoStore.selectedItem);
+const selectedType = computed(() => infoStore.selectedType);
 
-// Función para obtener la información desde la API de Deezer
-const obtenerInfo = async () => {
-  if (!id || !tipo) {
-    error.value = "No se encontró información.";
-    cargando.value = false;
-    return;
-  }
-
-  try {
-    console.log(`🔍 Obteniendo información de ${tipo} con ID: ${id}`);
-
-    let url = `https://api.deezer.com/${tipo}/${id}`;
-    const respuesta = await fetch(url);
-    const resultado = await respuesta.json();
-
-    // Verificar si la respuesta es válida
-    if (resultado.error) {
-      throw new Error("No se encontró información en Deezer.");
-    }
-
-    datos.value = resultado;
-    console.log("📥 Información obtenida:", datos.value);
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    cargando.value = false;
-  }
-};
-
-// 🔄 Ejecutar la búsqueda cuando cambie la URL
-watchEffect(() => {
-  obtenerInfo();
+// ⏳ Observa cambios en `selectedItem` y abre el modal automáticamente
+watch(selectedItem, (newValue) => {
+  console.log("🔍 Cambio detectado en selectedItem:", newValue);
+  showModal.value = !!newValue; // Si tiene datos, abre el modal
 });
+
+function cerrarModal() {
+  showModal.value = false;
+  infoStore.selectedType = null;
+  infoStore.selectedItem = null;
+}
 </script>
 
-<template>
-  <div class="container mt-4">
-    <!-- Botón para volver atrás -->
-    <button class="btn btn-outline-primary mb-3" @click="enrutador.back()">⬅ Volver</button>
-
-    <!-- Cargando -->
-    <div v-if="cargando" class="text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Cargando...</span>
-      </div>
-    </div>
-
-    <!-- Error -->
-    <p v-if="error" class="text-danger text-center">{{ error }}</p>
-
-    <!-- Mostrar el componente adecuado según el tipo de elemento -->
-    <InfoSong v-if="tipo === 'track' && datos" :datos="datos" />
-    <InfoAlbum v-if="tipo === 'album' && datos" :datos="datos" />
-    <InfoArtist v-if="tipo === 'artist' && datos" :datos="datos" />
-  </div>
-</template>
+<style scoped>
+/* Agrega el fondo oscuro para que el modal se vea correctamente */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+</style>

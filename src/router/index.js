@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import PlaylistsView from "../views/PlaylistsView.vue";
 import SearchView from "../views/SearchView.vue";
+import InfoView from "../views/InfoView.vue";
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     name: "SearchView",
     component: SearchView,
     props: (route) => ({ query: route.query.q }), // Asegura que la consulta se pase correctamente
+  },
+  {
+    path: "/Informacion",
+    name: "InfoView",
+    component: InfoView,
   },
 ];
 

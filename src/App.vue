@@ -19,7 +19,7 @@
     <main class="container my-4">
       <RouterView />
     </main>
-
+    <InfoView />
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3">
       <p>&copy; 2024 Deezer Music Client. Todos los derechos reservados.</p>
@@ -32,6 +32,8 @@
 import { RouterLink, RouterView } from 'vue-router';
 import Menu from "./components/menu.vue";
 import MusicPlayer from "@/components/MusicPlayer.vue";
+import InfoView from "@/views/InfoView.vue";
+
 
 // 📌 Importar el store de favoritos para detectar la canción en reproducción
 
