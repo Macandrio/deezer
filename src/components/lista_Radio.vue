@@ -24,7 +24,7 @@
   
   const fetchRadios = async () => {
     try {
-      const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.deezer.com/radio');
+      const response = await fetch('http://localhost:8080/https://api.deezer.com/radio');
       const data = await response.json();
       topRadios.value = data.data.slice(0, 6); // Tomar 6 radios populares (2 filas de 3)
     } catch (error) {

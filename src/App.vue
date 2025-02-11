@@ -1,11 +1,3 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router';
-import Menu from "./components/menu.vue";
-import Reproductor from './components/Reproductor.vue';
-</script>
-
-
-
 <template>
   <div id="app">
     <!-- Header -->
@@ -20,8 +12,8 @@ import Reproductor from './components/Reproductor.vue';
       <Menu />
     </div>
 
-    <!-- Contenedor para centrar el reproductor -->
-      <Reproductor />
+    <!-- Mostrar el reproductor solo si hay una canción en reproducción -->
+    <MusicPlayer />
 
     <!-- Main Content -->
     <main class="container my-4">
@@ -36,7 +28,14 @@ import Reproductor from './components/Reproductor.vue';
 </template>
 
 
+<script setup>
+import { RouterLink, RouterView } from 'vue-router';
+import Menu from "./components/menu.vue";
+import MusicPlayer from "@/components/MusicPlayer.vue";
 
+// 📌 Importar el store de favoritos para detectar la canción en reproducción
+
+</script>
 
 
 <style lang="scss">

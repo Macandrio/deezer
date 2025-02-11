@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineProps, defineEmits } from "vue";
 import SongCard from "@/components/SongCard.vue";
 import AlbumCard from "@/components/AlbumCard.vue";
 import ArtistCard from "@/components/ArtistCard.vue";
@@ -20,6 +20,13 @@ const props = defineProps({
   },
 });
 
+// 📌 Emitimos un evento cuando se hace clic en una canción para reproducirla
+const emit = defineEmits(["reproducir"]);
+
+function emitirCancion(cancion) {
+  emit('reproducir', cancion);
+}
+
 const filtro = ref("todos"); // Estado del filtro seleccionado
 
 // 📌 Computed para filtrar los resultados correctamente
@@ -30,6 +37,7 @@ const resultadosFiltrados = computed(() => {
     artistas: filtro.value === "artistas" || filtro.value === "todos" ? props.artistas : [],
   };
 });
+
 </script>
 
 <template>
@@ -49,7 +57,9 @@ const resultadosFiltrados = computed(() => {
       <h2 class="text-primary">🎵 Canciones</h2>
       <div class="row">
         <div v-for="cancion in resultadosFiltrados.canciones" :key="cancion.id" class="col-md-4 col-lg-3 mb-4">
-          <SongCard :cancion="cancion" />
+          <div @click="emitirCancion(cancion)">
+            <SongCard :cancion="cancion" />
+          </div>
         </div>
       </div>
     </div>

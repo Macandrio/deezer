@@ -18,7 +18,7 @@ import { ref, onMounted } from 'vue';
 const canciones = ref([]);
 
 const searchDeezer = async () => {
-  const llamada = await fetch('https://cors-anywhere.herokuapp.com/https://api.deezer.com/chart');
+  const llamada = await fetch('http://localhost:8080/https://api.deezer.com/chart');
   const datos = await llamada.json();
   canciones.value = datos.tracks.data;
 };

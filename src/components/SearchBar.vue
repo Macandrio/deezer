@@ -29,6 +29,7 @@ const realizarBusqueda = () => {
 <template>
   <div class="contenedor-busqueda d-flex justify-content-end">
     <form class="input-group caja-busqueda" @submit.prevent="realizarBusqueda">
+      
       <!-- Campo de entrada donde el usuario escribe su búsqueda -->
       <input
         type="text"

@@ -2,6 +2,8 @@
 import { ref, watchEffect, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import SearchResults from "@/components/SearchResults.vue";
+import MusicPlayer from "@/components/MusicPlayer.vue"; // 📌 Importamos el reproductor de música
+
 
 const ruta = useRoute();
 const consulta = ref(""); // Captura la búsqueda actual desde la URL
@@ -12,7 +14,7 @@ const cargando = ref(false);
 const error = ref("");
 
 // Proxy para evitar bloqueos de CORS
-const PROXY_URL = "https://cors-anywhere.herokuapp.com/"; // Alternativa: "https://api.allorigins.win/raw?url="
+const PROXY_URL = "http://localhost:8080/";
 
 // Función para buscar en la API de Deezer
 const buscar = async (query) => {
@@ -82,5 +84,6 @@ watchEffect(() => {
 
     <!-- Mostrar los resultados de la búsqueda -->
     <SearchResults v-if="!cargando" :canciones="canciones" :albumes="albumes" :artistas="artistas" />
+
   </div>
 </template>

@@ -16,6 +16,9 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/playlists">🎼 Playlists</router-link>
         </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/busqueda">🎼 Canciones</router-link>
+        </li>
       </ul>
 
       <!-- Usuario logueado -->
