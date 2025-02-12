@@ -7,7 +7,7 @@
     </div> -->
 
     <div class="container mt-4">
-      <h2>Gestión de Playlist</h2>
+      <h2>Gestión de Favorito</h2>
       <div class="list-group">
         <PlaylistItem
           v-for="cancion in playlist"

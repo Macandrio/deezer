@@ -1,62 +1,188 @@
 <template>
-    <div v-if="currentTrack" class="fixed-bottom bg-dark text-white py-2 px-3 w-100">
-      <div class="container-fluid d-flex align-items-center justify-content-between">
-        
+    <div v-if="currentTrack" class="music-player">
+      <div class="player-container">
         <!-- Sección izquierda: Imagen del álbum y detalles de la canción -->
-        <div class="d-flex align-items-center w-20 flex-shrink-0 me-3">
+        <div class="track-info">
           <img
             v-if="currentTrack?.album?.cover"
             :src="currentTrack.album.cover"
             alt="Portada"
-            class="img-fluid rounded me-2"
-            style="width: 50px; height: 50px;"
+            class="track-image"
           />
           <div>
-            <h6 class="m-0">{{ currentTrack?.title || "Sin canción" }}</h6>
-            <small class="text-muted d-block">{{ currentTrack?.artist?.name || "Desconocido" }}</small>
+            <h6 class="track-title">{{ currentTrack?.title || "Sin canción" }}</h6>
+            <small class="track-artist">{{ currentTrack?.artist?.name || "Desconocido" }}</small>
           </div>
         </div>
-  
-        <!-- Controles de reproducción centrados -->
-        <div class="d-flex flex-column align-items-center w-50">
-          <div class="d-flex align-items-center justify-content-center mb-1">
-            <button class="btn btn-link text-white fs-4 me-3" @click="playPrev">
+        
+        <!-- Controles de reproducción y barra de progreso bien centrados -->
+        <div class="player-controls">
+          <div class="controls">
+            <button class="control-btn" @click="playPrev">
               <i class="bi bi-skip-start-fill"></i>
             </button>
-            <button class="btn btn-link text-white mx-3 fs-3" @click="togglePlay">
+            <button class="control-btn play-btn" @click="togglePlay">
               <i :class="isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
             </button>
-            <button class="btn btn-link text-white fs-4 ms-3" @click="playNext">
+            <button class="control-btn" @click="playNext">
               <i class="bi bi-skip-end-fill"></i>
             </button>
           </div>
-  
-          <!-- Barra de progreso alineada con tiempos -->
-          <div class="d-flex align-items-center w-100">
-            <span class="text-muted small me-2">{{ formatTime(progress) }}</span>
+          
+          <!-- Barra de progreso -->
+          <div class="progress-bar-container">
+            <span class="time">{{ formatTime(progress) }}</span>
             <input
               type="range"
-              class="form-range mx-2 w-75"
+              class="progress-bar"
               v-model="progress"
               min="0"
               max="100"
               @input="seek"
-              style="height: 6px;"
             />
-            <span class="text-muted small ms-2">{{ formatTime(duration) }}</span>
+            <span class="time">{{ formatTime(duration) }}</span>
           </div>
         </div>
-  
-        <!-- Sección derecha: Botón de "Me gusta" -->
-        <button class="btn btn-link text-white">
-          <i class="bi bi-heart"></i>
-        </button>
       </div>
   
       <!-- Elemento de audio -->
       <audio ref="audio" :src="currentTrack.preview" @loadedmetadata="setDuration" @timeupdate="updateProgress" @ended="playNext"></audio>
     </div>
   </template>
+  
+  <style scoped>
+  .music-player {
+    z-index: 1000; /* Asegura que el reproductor esté por encima de todo */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #222;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .player-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .track-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+    margin-left: 0;
+    position: absolute;
+    left: 10px; /* Ajusta la imagen al borde de la pantalla */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+    margin-left: 0; /* Asegura que la imagen esté pegada a la izquierda */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+  }
+  
+  .track-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .track-title {
+    margin: 0;
+    font-weight: bold;
+  }
+  
+  .track-artist {
+    color: white;
+    opacity: 0.8;
+  }
+  
+  .player-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    margin-left: auto;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  
+  .control-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .control-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  .play-btn {
+    font-size: 2rem;
+  }
+  
+  .progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 90%; /* Hacer la barra de progreso más larga */
+    max-width: 800px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 80%;
+    max-width: 600px;
+    margin-top: 10px;
+  }
+  
+  .progress-bar {
+    flex-grow: 1;
+    appearance: none;
+    height: 5px;
+    border-radius: 5px;
+    background: linear-gradient(to right, #6c757d, #0dcaf0);
+    cursor: pointer;
+  }
+  
+  .time {
+    font-size: 0.9rem;
+    color: white;
+  }
+  </style>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 
 
@@ -159,3 +285,6 @@ const formatTime = (seconds) => {
 
   </script>
   
+
+
+
