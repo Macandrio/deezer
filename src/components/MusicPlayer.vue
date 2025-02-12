@@ -74,10 +74,6 @@
     // ✅ `currentTrack` es reactivo
     const currentTrack = computed(() => store.enreproducion);
 
-
-    function cancionEnReproduccion(){
-        store.reproducirCancionDesdeLista();
-    }
     const togglePlay = () => {
     if (!audio.value) return;
     if (isPlaying.value) {
@@ -92,6 +88,7 @@ const playNext = () => {
     store.playNext();
     isPlaying.value = false;
     setTimeout(() => audio.value?.play(), 100);
+    console.log('sigueinte')
 };
 
 const playPrev = () => {
@@ -100,6 +97,7 @@ const playPrev = () => {
         store.setCurrentTrack(store.playlist[currentIndex - 1]);
         isPlaying.value = false;
         setTimeout(() => audio.value?.play(), 100);
+        console.log('atras')
     }
 };
 
@@ -126,7 +124,7 @@ const seek = () => {
 
 // ✅ Detectar cambios en `currentTrack`
 watch(
-    () => store.currentTrack,
+    () => store.enreproducion,
     async (newTrack) => {
         if (newTrack && audio.value) {
             await nextTick(); // Esperar a que la referencia del audio se actualice

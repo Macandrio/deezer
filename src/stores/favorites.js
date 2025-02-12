@@ -75,10 +75,11 @@ export const useFavoritesStore = defineStore("favorites", {
 
     // 🔥 Reproducir la siguiente canción en la lista
     playNext() {
+      console.log('entrado')
       if (this.playlist.length > 0) {
         const currentIndex = this.playlist.findIndex((s) => s.id === this.enreproducion?.id);
         const nextIndex = (currentIndex + 1) % this.playlist.length;
-        this.currentTrack = this.playlist[nextIndex];
+        this.enreproducion = this.playlist[nextIndex];
       }
     },
 
