@@ -13,8 +13,10 @@
           v-for="cancion in playlist"
           :key="cancion.id"
           :cancion="cancion"
-          @remove="Eliminarcancionlista"
+          @reproducir="Reproducircancion"
+          @eliminar="Eliminarcancionlista"
         />
+
       </div>
     </div>
   </template>
@@ -33,6 +35,12 @@
   const Eliminarcancionlista = (cancion) => {
     favoritesStore.Eliminarcancion(cancion);
   };
+
+  const Reproducircancion = (cancion) => {
+    console.log("🔊 Intentando reproducir:", cancion);
+    favoritesStore.reproducirCancionDesdeLista(cancion);
+  };
+
   </script>
   
   <style scoped>

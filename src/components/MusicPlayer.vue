@@ -1,67 +1,84 @@
 <template>
-    <div v-if="currentTrack" class="music-player">
-        <!-- Controles de la izquierda -->
-        <div class="player-controls">
-            <button class="btn btn-dark" @click="playPrev">
-                <i class="bi bi-skip-backward-fill"></i>
-            </button>
-            <button class="btn btn-dark play-btn" @click="togglePlay">
-                <i :class="isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
-            </button>
-            <button class="btn btn-dark" @click="playNext">
-                <i class="bi bi-skip-forward-fill"></i>
-            </button>
+    <div v-if="currentTrack" class="fixed-bottom bg-dark text-white py-2 px-3 w-100">
+      <div class="container-fluid d-flex align-items-center justify-content-between">
+        
+        <!-- Sección izquierda: Imagen del álbum y detalles de la canción -->
+        <div class="d-flex align-items-center w-20 flex-shrink-0 me-3">
+          <img
+            v-if="currentTrack?.album?.cover"
+            :src="currentTrack.album.cover"
+            alt="Portada"
+            class="img-fluid rounded me-2"
+            style="width: 50px; height: 50px;"
+          />
+          <div>
+            <h6 class="m-0">{{ currentTrack?.title || "Sin canción" }}</h6>
+            <small class="text-muted d-block">{{ currentTrack?.artist?.name || "Desconocido" }}</small>
+          </div>
         </div>
-
-        <!-- Imagen de la canción en el centro -->
-        <div class="track-info">
-            <img :src="currentTrack.album.cover_small" alt="Cover" class="track-cover" />
-            <div class="track-details">
-                <h4>{{ currentTrack.title }}</h4>
-                <p>{{ currentTrack.artist.name }}</p>
-            </div>
-        </div>
-
-        <!-- Botón de pantalla completa a la derecha -->
-        <div class="expand-btn">
-            <button class="btn btn-dark" @click="toggleFullScreen">
-                <i class="bi bi-arrows-fullscreen"></i>
+  
+        <!-- Controles de reproducción centrados -->
+        <div class="d-flex flex-column align-items-center w-50">
+          <div class="d-flex align-items-center justify-content-center mb-1">
+            <button class="btn btn-link text-white fs-4 me-3" @click="playPrev">
+              <i class="bi bi-skip-start-fill"></i>
             </button>
-        </div>
-
-        <!-- Barra de progreso con tiempos -->
-        <div class="progress-container">
-            <span class="time">{{ formatTime(progress) }}</span>
+            <button class="btn btn-link text-white mx-3 fs-3" @click="togglePlay">
+              <i :class="isPlaying ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
+            </button>
+            <button class="btn btn-link text-white fs-4 ms-3" @click="playNext">
+              <i class="bi bi-skip-end-fill"></i>
+            </button>
+          </div>
+  
+          <!-- Barra de progreso alineada con tiempos -->
+          <div class="d-flex align-items-center w-100">
+            <span class="text-muted small me-2">{{ formatTime(progress) }}</span>
             <input
-                type="range"
-                min="0"
-                :max="audio?.duration || 1"
-                step="0.1"
-                v-model="progress"
-                @input="seek"
+              type="range"
+              class="form-range mx-2 w-75"
+              v-model="progress"
+              min="0"
+              max="100"
+              @input="seek"
+              style="height: 6px;"
             />
-            <span class="time">{{ formatTime(audio?.duration || 0) }}</span>
+            <span class="text-muted small ms-2">{{ formatTime(duration) }}</span>
+          </div>
         </div>
-
-        <!-- Audio (oculto) -->
-        <audio ref="audio" :src="currentTrack.preview" @loadedmetadata="setDuration" @timeupdate="updateProgress" @ended="playNext"></audio>
+  
+        <!-- Sección derecha: Botón de "Me gusta" -->
+        <button class="btn btn-link text-white">
+          <i class="bi bi-heart"></i>
+        </button>
+      </div>
+  
+      <!-- Elemento de audio -->
+      <audio ref="audio" :src="currentTrack.preview" @loadedmetadata="setDuration" @timeupdate="updateProgress" @ended="playNext"></audio>
     </div>
-</template>
+  </template>
+  
 
-<script setup>
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
-import { useFavoritesStore } from "@/stores/favorites.js";
 
-const store = useFavoritesStore();
-const audio = ref(null);
-const isPlaying = ref(false);
-const progress = ref(0);
-const duration = ref(0);
 
-// ✅ `currentTrack` es reactivo
-const currentTrack = computed(() => store.currentTrack);
+  <script setup>
+   import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
+    import { useFavoritesStore } from "@/stores/favorites.js";
 
-const togglePlay = () => {
+    const store = useFavoritesStore();
+    const audio = ref(null);
+    const isPlaying = ref(false);
+    const progress = ref(0);
+    const duration = ref(0);
+
+    // ✅ `currentTrack` es reactivo
+    const currentTrack = computed(() => store.enreproducion);
+
+
+    function cancionEnReproduccion(){
+        store.reproducirCancionDesdeLista();
+    }
+    const togglePlay = () => {
     if (!audio.value) return;
     if (isPlaying.value) {
         audio.value.pause();
@@ -140,102 +157,7 @@ const formatTime = (seconds) => {
     const sec = Math.floor(seconds % 60).toString().padStart(2, "0");
     return `${min}:${sec}`;
 };
-</script>
 
-<style scoped>
-/* 🔹 Reproductor de Música */
-.music-player {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 90px;
-    background: #181818;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
 
-/* 🔹 Controles de reproducción */
-.player-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* 🔹 Imagen de la canción en el centro */
-.track-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    max-width: 300px;
-}
-
-.track-cover {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
-}
-
-.track-details h4 {
-    font-size: 14px;
-    margin: 0;
-}
-
-.track-details p {
-    font-size: 12px;
-    margin: 0;
-    color: #bbb;
-}
-
-/* 🔹 Botón de pantalla completa */
-.expand-btn {
-    display: flex;
-    align-items: center;
-}
-
-/* 🔹 Barra de progreso */
-.progress-container {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.progress-container input {
-    width: 100%;
-    height: 7px;
-    cursor: pointer;
-    background: transparent;
-    appearance: none;
-}
-
-.progress-container input::-webkit-slider-runnable-track {
-    background: red;
-    height: 5px;
-}
-
-.progress-container input::-webkit-slider-thumb {
-    appearance: none;
-    width: 10px;
-    height: 10px;
-    background: white;
-    border-radius: 50%;
-    margin-top: -2px;
-}
-
-.time {
-    font-size: 12px;
-    color: white;
-    min-width: 40px;
-    text-align: center;
-}
-</style>
+  </script>
+  

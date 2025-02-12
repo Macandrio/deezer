@@ -1,8 +1,8 @@
 <template>
-  <div class="card h-100 shadow">
+  <div class="card h-100 shadow" v-if="cancion && cancion.album">
     <!-- Imagen de la carátula del álbum -->
       <img
-        :src="cancion.album.cover_big"
+        :src="cancion.album?.cover_big || 'https://via.placeholder.com/150'"
         class="card-img-top"
         :alt="cancion.title"
         @click.stop="verDetalles"
@@ -55,20 +55,22 @@ import { useFavoritesStore } from "@/stores/favorites";
 import { useInfoStore } from "@/stores/infoStore";
 
 
+const infoStore = useInfoStore();
 const props = defineProps({
-  cancion: Object
+  cancion: Object,
 });
 
-const infoStore = useInfoStore();
+const cancionValida = computed(() => props.cancion && props.cancion.album);
 
 function verDetalles() {
-  if (!props.cancion || !props.cancion.album) {
-    console.error("❌ Error: Canción o álbum no definidos:", props.cancion);
+  if (!cancionValida.value) {
+    console.error("❌ Error: La canción no está correctamente definida:", props.cancion);
     return;
   }
   console.log("🖱️ Click en la imagen. Canción enviada a setInfo():", props.cancion);
   infoStore.setInfo("song", props.cancion);
 }
+
 
 
 
@@ -80,10 +82,8 @@ const esta = computed(() => favoritesStore.isFavorite(props.cancion.id));
 function añadircancion(){
     if (esta.value) {
       favoritesStore.Eliminarcancion(props.cancion.id);
-      console.log('borrado' + cancion.id)
     } else {
       favoritesStore.Agregarcancion(props.cancion);
-      console.log('añadida'+ cancion.id)
     }
 };
 </script>

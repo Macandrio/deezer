@@ -2,7 +2,14 @@
   <div class="card mb-3 playlist-item">
     <div class="row g-0 align-items-center">
       <div class="col-md-4">
-        <img :src="cancion.album.cover" class="img-fluid rounded-start" alt="Album cover">
+        <img 
+          :src="cancion.album.cover" 
+          class="img-fluid rounded-start" 
+          alt="Album cover"
+          @click="$emit('reproducir', cancion)"
+        />
+
+
       </div>
       <div class="col-md-6">
         <div class="card-body">
@@ -11,7 +18,7 @@
         </div>
       </div>
       <div class="col-md-2">
-        <button @click="$emit('remove', cancion.id)" class="btn btn-danger">
+        <button @click="$emit('eliminar', cancion.id)" class="btn btn-danger">
           <i class="bi bi-trash"></i> Eliminar
         </button>
       </div>
