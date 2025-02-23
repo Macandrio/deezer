@@ -2,7 +2,6 @@
 import { ref, watchEffect, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import SearchResults from "@/components/SearchResults.vue";
-import MusicPlayer from "@/components/MusicPlayer.vue"; // 📌 Importamos el reproductor de música
 
 
 const ruta = useRoute();

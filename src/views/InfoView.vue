@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Información Detallada</h5>
-          <button type="button" class="btn-close" @click="cerrarModal"></button>
+          <button type="button" class="btn-close"></button>
         </div>
         <div class="modal-body">
           <!-- Renderiza el componente correcto según el tipo -->
@@ -39,11 +39,11 @@ watch(selectedItem, (newValue) => {
   showModal.value = !!newValue; // Si tiene datos, abre el modal
 });
 
-function cerrarModal() {
-  showModal.value = false;
-  infoStore.selectedType = null;
-  infoStore.selectedItem = null;
-}
+// function cerrarModal() {
+//   showModal.value = false;
+//   infoStore.selectedType = null;
+//   infoStore.selectedItem = null;
+// }
 </script>
 
 <style scoped>
