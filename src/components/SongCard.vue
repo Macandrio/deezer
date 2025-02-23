@@ -55,6 +55,7 @@ import { useFavoritesStore } from "@/stores/favorites";
 import { useInfoStore } from "@/stores/infoStore";
 
 
+
 const infoStore = useInfoStore();
 const props = defineProps({
   cancion: Object,
